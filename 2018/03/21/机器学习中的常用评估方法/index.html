@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <!-- Html Head Tag-->
+  <head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Jocker">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="机器学习中的常用评估方法"/>
+  <meta property="og:description" content="" />
+  <meta property="og:site_name" content="Jocker&#39;s"/>
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="http://yoursite.com"/>
+  
+    <link rel="alternate" href="/atom.xml" title="Jocker&#39;s" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>Jocker's</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/css/style.light.css">
+
+  <!-- Google Analytics --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+  <body>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- Page Header -->
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<header class="site-header header-background" style="background-image: url(/img/cover.jpg)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">机器学习中的常用评估方法</p>
+          <p class="subtitle"></p>
+        </div>
+        <div class="site-menu with-background-image">
+          <ul>
+            
+              <li>
+                <a href="/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/capslockor">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:<your-email-address>">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By Jocker</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2018-03-21</span>
+            <span class="time">22:21:47</span>
+          </span>
+          
+          <!--  Categories  -->
+            <span class="categories info">Under 
+
+<a href="/categories/code/">code</a>
+</span>
+          
+        </div>
+        <!-- Tags -->
+        
+          <div class="post-tags text-muted">
+            Tags: 
+
+<a class="tag" href="/tags/算法基础/">#算法基础</a>
+
+
+          <span id="busuanzi_container_page_pv">
+                本文浏览量<span id="busuanzi_value_page_pv"></span>次
+          </span>
+          </div>
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <ul>
+<li>本篇文章主要对机器学习，以及深度学习中的一些评估方法的计算进行总结，包括 Precision, Recall, Fp-Rate, Tp-Rate, F-socre, ROC, RP, AUC, AP, MAP等基本评估算法。<a id="more"></a>
+</li>
+</ul>
+<hr>
+<h2 id="Confuse-Matrix"><a href="#Confuse-Matrix" class="headerlink" title="Confuse Matrix"></a>Confuse Matrix</h2><p>假设我们面对的是一个二分类问题，根据预测结果和事物本身的标签，我们可以通过sklearn 的 confuse matrix 或其他方法获得一个Confuse Matrxi，如下图所示：<br><img src="/image/1.png" alt=""></p>
+<p>根据上图所示的分类结果，我们引出以下评估公式:</p>
+<p>precison: 预测为positive中真正是positive的比例，越大越好，1为理想状态。<br>$$precision = \frac{TP}{TP + FP}$$<br>recall: 所有positive中预测为positive的比例，越大越好，1为理想状态。<br>$$recall = \frac{TP}{TP + FN}$$<br>F1-score: 对precison 和 recall 做一个平均，越大越好。<br>$$F1 = \frac{2\times Precision \times Recall}{Precision + Recall}$$<br>F-measure: 对precison 和 recall 做一个加权平均，越大越好, $\alpha$ 是权重系数。<br>$$F-measure = \frac{(\alpha^2 + 1)\times Precision \times Recall}{\alpha^2(Precision \times Recall)}$$<br>fp-rate: false positive 占整个negative的比例。<br>$$fp-rate = \frac{FP}{FP + TN}$$<br>tp-rate: true positive 占整个positive的比例。<br>$$tp-rate = \frac{TP}{TP + FN}$$</p>
+<hr>
+<h2 id="Roc曲线和-AUC"><a href="#Roc曲线和-AUC" class="headerlink" title="Roc曲线和 AUC"></a>Roc曲线和 AUC</h2><p>ROC曲线是基于样本的真实类别和预测概率来绘制的，具体来说，ROC曲线的 x 轴是伪阳性率(false positive rate), y 轴是真阳性率(true positive rate)。 依据上文所给出的公式我们可以计算 $fp-rate, tp-rate$， 而我们可以依据选定的分段间隔绘制 ROC 曲线，例如我们可以选取 0.1 为阈值，将概率大于 0.1 的为正，将概率小于 0.1 的为负，然后计算 $fp-rate, tp-rate$， 同时采取不同的概率分段，计算 $fp-rate, tp-rate$ 然后采取不同的间隔绘制ROC曲线，而AUC的值，就是对应绘制好的ROC曲线与坐标轴所围成的面积，越大越好。</p>
+<p><img src="/image/ROC.png" alt=""></p>
+<hr>
+<h2 id="PR曲线"><a href="#PR曲线" class="headerlink" title="PR曲线"></a>PR曲线</h2>
+        </div>
+        <div id="gitmentContainer"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+        var gitment = new Gitment({
+            owner: 'capslockor',
+            repo: 'capslockor.github.io',
+            oauth: {
+                client_id: 'f15b4fe423822d061f94',
+                client_secret: 'c6314e1933de04aeb41bc3da160fd1a78c0e774d',
+            },
+        });
+        gitment.render('gitmentContainer');
+        </script>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        <p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+          <span id="busuanzi_container_site_pv">
+            本站总访问量	<span id="busuanzi_value_site_pv"></span>次
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+
