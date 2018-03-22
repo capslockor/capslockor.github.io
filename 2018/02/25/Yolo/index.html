@@ -103,7 +103,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-02-25</span>
-            <span class="time">22:21:47</span>
+            <span class="time">22:34:40</span>
           </span>
           
           <!--  Categories  -->
@@ -146,7 +146,7 @@
 <p>最近的方法，如R-CNN使用区域提出方法，首先在图像中生成潜在的边界框，然后在这些潜在边界中运行分类器。在分类器之后，处理用于细化边界框，消除重复的检测，并且根据场景中的其它目标重新定义边界框。这些复杂的流程很慢，很难优化，因为每个单独的组件都必须进行单独的训练。</p>
 <p>We reframe object detection as a single regression problem, straight from image pixels to bounding box coordinates and class probabilities. Using our system, you only look once (YOLO) at an image to predict what objects are present and where they are.</p>
 <p>我们将目标检测系统重新看做单一的回归问题，直接从图像像素到边界框所对应类别概率。使用我们系统，YOLO只需看一次图片，就可以标记图像中的物体和他们的类别。</p>
-<p><img src="../image/yolo/1.42.32.png" alt=""></p>
+<p><img src="/image/1.42.32.png" alt=""></p>
 <p>First, YOLO is extremely fast. Since we frame detection as a regression problem we don’t need a complex pipeline. We simply run our neural network on a new image at test time to predict detections. Our base network runs at 45 frames per second with no batch processing on a Titan X GPU and a fast version runs at more than 150 fps. This means we can process streaming video in real-time with less than 25 milliseconds of latency. Furthermore, YOLO achieves more than twice the mean average precision of other real-time systems. For a demo of our system running in real-time on a webcam please see our project webpage: <a href="http://pjreddie.com/yolo/" target="_blank" rel="noopener">http://pjreddie.com/yolo/</a>.</p>
 <p>首先， yolo的速度非常的快，由于我们将检测视为回归问题，所以我们不需要复杂的流程。我们将图片输入我们的神经网络来进行测试。我们的基础网络以45f/s 的速度运行， 在Titan x gpu上没有批处理，快速版本的运行速度超过150fps， 这意味可以在不到25毫秒的延迟上处理实时媒体流视频，此外，YOLO实现了其它实时系统两倍以上的平均精度。关于我们系统在网络摄像头上实时运行的演示，请参阅我们的项目地址<a href="http://pjreddie.com/yolo/" target="_blank" rel="noopener">http://pjreddie.com/yolo/</a>.</p>
 <p>Second, YOLO reasons globally about the image when making predictions. Unlike sliding window and region proposal-based techniques, YOLO sees the entire image during training and test time so it implicitly encodes contextual information about classes as well as their appearance. Fast R-CNN, a top detection method [14], mistakes background patches in an image for objects because it can’t see the larger context. YOLO makes less than half the number of background errors compared to Fast R-CNN.</p>
@@ -170,7 +170,7 @@
 <p>每个网格单元还预测 $C$ 个类别条件概率， $\Pr(\textrm{Class}_i | \textrm{Object})$. 这些概率以包含目标的网络单元格为条件。每个网格我们只预测的一组类别概率，二不管边界框的数量 $B$ 是多少。</p>
 <p>At test time we multiply the conditional class probabilities and the individual box confidence predictions。</p>
 <p>它为我们提供了每个框特定类别的置信度分数。这些分数编码了该类出现在框中的概率以及预测框拟合目标的程度。</p>
-<p><img src="../image/yolo/2.34.42.png" alt=""></p>
+<p><img src="/image/2.34.42.png" alt=""></p>
 <p>For evaluating YOLO on Pascal VOC, we use $S=7$, $B=2$. Pascal VOC has 20 labelled classes so $C=20$. Our final prediction is a $7\times 7 \times 30$ tensor.</p>
 <p>在Pascal VOC 上评估 YOLO网络， 我们使用了 $S = 7$, $B = 2$。 Pascal VOC 有 20 个标注类， 所以我们的最终预测是 $7 \times 7 \times 30$ 的张量。</p>
 <hr>
