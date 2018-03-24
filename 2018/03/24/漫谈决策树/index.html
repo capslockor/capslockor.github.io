@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <!-- Html Head Tag-->
+  <head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+  <link rel="dns-prefetch" href="//cdn.bootcss.com" />
+  <link rel="dns-prefetch" href="//cdn.mathjax.org" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Jocker">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="漫谈决策树"/>
+  <meta property="og:description" content="" />
+  <meta property="og:site_name" content="Jocker&#39;s"/>
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="http://yoursite.com"/>
+  
+    <link rel="alternate" href="/atom.xml" title="Jocker&#39;s" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>Jocker's</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/css/style.light.css">
+
+  <!-- Google Analytics --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+</head>
+
+  <body>
+    
+
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- Page Header -->
+
+
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<header class="site-header header-background" style="background-image: url(/img/cover.jpg)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">漫谈决策树</p>
+          <p class="subtitle"></p>
+        </div>
+        <div class="site-menu with-background-image">
+          <ul>
+            
+              <li>
+                <a href="/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/capslockor">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:<your-email-address>">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By Jocker</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2018-03-24</span>
+            <span class="time">08:06:55</span>
+          </span>
+          
+          <!--  Categories  -->
+            <span class="categories info">Under 
+
+<a href="/categories/code/">code</a>
+</span>
+          
+        </div>
+        <!-- Tags -->
+        
+          <div class="post-tags text-muted">
+            Tags: 
+
+<a class="tag" href="/tags/算法基础/">#算法基础</a>
+
+
+          <span id="busuanzi_container_page_pv">
+                本文浏览量<span id="busuanzi_value_page_pv"></span>次
+          </span>
+          </div>
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <p>决策树是机器学习中的很常见的算法，涉及很多基础的算法，例如信息增益，信息增益率，Gini指数，这些算法，在特征工程中也占有举足轻重的地位。再此整理。</p>
+<a id="more"></a>
+<hr>
+<h2 id="模型的特性"><a href="#模型的特性" class="headerlink" title="模型的特性"></a>模型的特性</h2><p>###优点</p>
+<pre><code>1. 容易理解和解释，并且生成的决策树可被可视化。
+2. 不需要特别的数据预处理(必须处理缺失值)。通常其余模型需要将数据进行标准化，哑变量，变量筛选，等等的数据预处理过程。
+3. 算法的复杂度是对数级别。
+4. 能够处理连续性以及离散型变量。
+5. 可以处理多分类问题。
+6. 可以使用统计方法对模型进行评估。
+</code></pre><p>###缺点</p>
+<pre><code>1. 决策树很容易产生严重的过拟合问题
+2. 对数据变化敏感，小量的数据变化可能导致完全不同的决策树生成
+3. 选择最优决策树是一个NP完全问题。只能找到局部最优解。
+4. 不可以处理异或问题。
+5. 数据样本的不平衡，可能会导致错误的决策树被建立。
+</code></pre><ol>
+<li>属性选择</li>
+</ol>
+<hr>
+<h3 id="信息增益-Information-gain"><a href="#信息增益-Information-gain" class="headerlink" title="信息增益(Information gain)"></a>信息增益(Information gain)</h3><p>信息增益基于香浓的信息论，它基于分裂前后的信息差异选择分裂属性,找出信息增益值最大的属性，作为分裂节点。节点所包含的信息计量(熵)的定义如下：<br>$$ Info(D) = -\sum_{i=1}^mp_ilog_2(p_i) $$<br>其中 $m$ 表示数据集 $D$ 中类别 $C$ 的个数，$pi$ 表示 $D$ 中任意一个类别 $C_i$ 的概率($p_i=\frac{count(C_i)}{count(D)}$). $Info(D)$ 表示数据集D在此种概率分布下，不确定性的大小.</p>
+<blockquote>
+<p>信息增益所表示的是当我们引入一个新的变量时，元数据在新的概率分布下不确定性的变化。可以看出随着概率分布更加均衡，以及数据集中分类可能性的增多，熵的值越大，不确定性也更高</p>
+</blockquote>
+<p>信息增益表示，数据集在某个属性节点分裂前后分布不确定性的变化。<br>$$Gain(R) = Info(D) - Info_R(D) $$<br>分裂后的熵计算公式如下:<br>$$Info_R(D) =    -\sum_{j=1}^{k}\frac{|D_j|}{|D|}\times Info(D_j)$$<br>上述公式中 $Info_R(D) $表示使用 $R$ 节点分裂后新形成的数据集的熵，$R$ 有 k 个不同的取值$\lbrace V_1,V_2 ,\ldots,V_k\rbrace$,于是可以将 $D$ 根据 $R$ 的取值分成 k 组 $\lbrace D_1,D_2,\ldots,D_k \rbrace$<br>信息增益$Gain(R)$表示属性R节点使分类分布不确定性的变化，我们寻找$Gain$最大的属性，就能使分类后的结果更纯，最可能把不同的类别分开。ID3算法就是基于信息增益来进行属性的选择。</p>
+<h3 id="增益比率-Gain-ratio"><a href="#增益比率-Gain-ratio" class="headerlink" title="增益比率(Gain ratio)"></a>增益比率(Gain ratio)</h3><blockquote>
+<p>基于信息增益进行属性选择有一个很大的缺陷，它会倾向于选择属性值多的属性。一个较为极端的例子是某种属性将预测属性完全分割，也就是在该属性分割后预测属性在每个分割集中，只有一种可能，分割后的预测属性的不确定性很小。但这样的分割方式往往没有任何意义，缺乏泛化能力。</p>
+</blockquote>
+<p>信息增益比率对上面的情况进行了改进，它引入了一个分裂信息：<br>$$SplitInfo_R(D)=-\sum_{j=1}^{k}\frac{|D_j|}{D}\times log_2(\frac{|D_j|}{|D|})$$<br>增益比率定义为信息增益与分裂信息的比值：<br>$$GainRatio(R)=\frac{Gain(R)}{SplitInfo_R(D)}$$<br>可以选择$GainRatio(R)$最大的属性为最佳的分裂属性。C3算法采用此方法选择分裂节点。</p>
+<blockquote>
+<p>$GainRatio(R)$通过$SplitInfo_R(D)$对属性较多的节点进行惩罚，如果一个节点的属性取值很多，那么$SplitInfo$会增大，使$GainRatio$变小，不过当一个节点属性很少也可能会导致$SplitInfo$取值为0或者趋于0，使$GainRatio(R)$的值变得不可信，可以通过引入平滑系数对信息增益比率进行改进。<br>$$GainRatio(R)=\frac{Gain(R)}{\overline{SplitInfo(D)}+SplitInfo_R(D)}$$</p>
+</blockquote>
+<h3 id="基尼指数-Gini-index"><a href="#基尼指数-Gini-index" class="headerlink" title="基尼指数(Gini index)"></a>基尼指数(Gini index)</h3><p>基尼指数是另外一种数据的不纯度的度量方法，定义如下：<br>$$Gini(D) = 1 - \sum_{i=1}^{m}P_i^2$$<br>其中$m$仍然表示数据集D中类别C的个数，$P_i$表示D中任意一个记录属于$C_i$的概率，计算时$P_i=\frac{counts(C_i)}{counts(D)}$.如果所有的记录都同属于一个类别中，则$P_1=1$,$Gini(D)=0$，此时不纯度最低。算法CART(Classification and Regression Tree)算法中利用基尼指数构造二叉决策树。<br>$$Gini_R(D)=\frac{|D_1|}{|D|}Gini(D_1) + \frac{|D_2|}{|D|}Gini(D_2)$$<br>其中$D_1$为$D$的一个非空真子集，$D_2$为$D_1$在$D$的补集，对于某个属性，可能有很多个真子集，我们选择最小的值作为属性R的基尼指数。<br>$$\Delta Gini(R)=Gini(D)-Gini_R(D)$$<br>我们将$\Delta Gini(R)$值最大的属性最为最佳的分裂节点。</p>
+<ol>
+<li>剪枝</li>
+</ol>
+<hr>
+<p>在决策树学习中将已经生成的树进行简化的过程称为剪枝。具体的说就是从已生成的树上裁剪掉一些子树或叶结点，并将其根节点或父结点作为新的叶结点，从而简化分类树模型，减轻过拟合问题。</p>
+<p>决策树的剪枝往往通过极小化决策树整体的代价函数(cost function)来实现，代价函数如下:<br>$$C_\alpha(T)=\sum_{t=1}^{|T|}N_tH_t(T) + \alpha|T| $$<br>其中树T的叶结点个数为$|T|$,t是树T的叶结点，该叶结点有$N_t$个样本点，其中k类的样本点有$N_{tk}$个，$k=1,2,\cdots,K$ , $H_t(T)$为叶结点的t上的熵，$\alpha \geq 0$为参数。<br>$H_t(T)$的公式为:<br>$$H_t(T)=-\sum_{k}^{K}\frac{N_{tk}}{N_t}log\frac{N_tk}{N_t}$$<br>可以将损失函数函数改写为:<br>$$C_\alpha(T)=C(T)+\alpha|T|$$<br>其中$C(T)$表示模型对训练数据的预测误差，即模型与训练数据的拟合度，$|T|$表示模型复杂度,参数$\alpha$控制两者之间的影响，较大的$\alpha$倾向于选择较为简单的模型，较小的$\alpha$倾向于选择较为复杂的模型。式中定义的损失函数的极小化等价于正则化的极大似然估计。所以剪枝等价于利用正则化的极大似然估计进行模型选择。<br>剪枝的流程如下：</p>
+<ol>
+<li>计算每个节点的熵。</li>
+<li>递归的从树的叶结点向上回缩。设一组叶结点回缩到其父节点之前与之后的的整体分别为$T_A$与$T_B$，其对应的损失函数分别是$C_\alpha(T_A)$与$C_\alpha(T_B)$,如果:<br>$$C_\alpha(T_A) \geq C_\alpha(T_B)$$,那么进行剪枝，将子节点中最多的类作为父节点的标识。</li>
+<li>返回(2)直至该过程不能继续，得到损失函数最小的子树。</li>
+<li>算法(ID3,C4.5,CART)</li>
+</ol>
+<hr>
+<p>ID3算法使用信息增益选择决策树分裂属性，C4.5算法使用信息增益率选择决策树分裂属性，CART算法使用基尼指数选择决策树的分裂属性。下面以CART算法介绍整个树生成以及剪枝流程：<br>CART是一种分类回归模型，由Breiman等人在1984年提出。可以用作分类以及回归。CART假设决策树为二叉树。</p>
+<ul>
+<li>决策树生成<ol>
+<li>设结点的训练数据集为D，计算现有特征对该数据集的基尼指数。</li>
+<li>在所有可能的特征A以及他们所有的可能的切分点$\alpha$中，选择基尼指数最优的特征以及最优切分点，依据此最优特征以及最优切分点，将训练数据集特征分配到两个子节点中。</li>
+<li>对两个子节点递归的调用(1)(2)，直至满足停止条件。</li>
+</ol>
+</li>
+<li><p>决策树的剪枝</p>
+<ol>
+<li>设$k=0$ , $T=T_0$($T_0$表示生成起始决策树).</li>
+<li>设$\alpha=+\infty$</li>
+<li>自下向上计各个内部节点t计算$C(T_t)$ , $|T_t|$以及<br>$$g(t) = \frac{C(t)-C(T_t)}{|T_t|-1}$$<br>$$\alpha = min(\alpha,g(t))$$</li>
+<li>自上而下地访问内部节点t, 如果有$g(t)=\alpha$, 进行剪枝, 并对叶结点t以多数表决法决定其类，得到树T.</li>
+<li>$k = k + 1$ , $\alpha_k = \alpha$ , $T_k = T$</li>
+<li>如果T不是由根节点单独构成的树，则回到步骤(4)</li>
+<li><p>采用交叉验证法，在子书序列$T_0,T_1,\cdots,T_n$中选取最优子树$T_\alpha$</p>
+</li>
+<li><p>Python代码示例</p>
+</li>
+</ol>
+</li>
+</ul>
+<hr>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> tree</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line">iris = load_iris()</span><br><span class="line">clf = tree.DecisionTreeClassifier()</span><br><span class="line">clf = clf.fit(iris.data, iris.target)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> pydotplus</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dot_data = tree.export_graphviz(clf ,</span><br><span class="line">            out_file=<span class="keyword">None</span>,feature_names=iris.feature_names,</span><br><span class="line">            class_names=iris.target_names, filled = <span class="keyword">True</span>,</span><br><span class="line">            rounded = <span class="keyword">True</span>, special_characters = <span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">graph = pydotplus.graph_from_dot_data(dot_data)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Image(graph.create_jpg())</span><br></pre></td></tr></table></figure>
+<p><img src="http://static.zybuluo.com/jocker---/wtfw6dxz4ugk4lorolldwga0/output_5_0.jpeg" alt="output_5_0.jpeg-190.8kB"></p>
+
+        </div>
+        <div id="gitmentContainer"></div>
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+        <script>
+        var gitment = new Gitment({
+            owner: 'capslockor',
+            repo: 'capslockor.github.io',
+            oauth: {
+                client_id: 'f15b4fe423822d061f94',
+                client_secret: 'c6314e1933de04aeb41bc3da160fd1a78c0e774d',
+            },
+        });
+        gitment.render('gitmentContainer');
+        </script>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        <p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+          <span id="busuanzi_container_site_pv">
+            本站总访问量	<span id="busuanzi_value_site_pv"></span>次
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]]}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+</body>
+</html>
+
