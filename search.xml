@@ -5,8 +5,20 @@
     <entry>
       <title>漫谈PCA</title>
       <link href="/2018/03/27/%E6%BC%AB%E8%B0%88PCA/"/>
-      <content type="html"><![CDATA[]]></content>
+      <content type="html"><![CDATA[<p>PCA(Principal Component Analysis) 是一种常用的降维方法。PCA通过线性变换将原始数据变换为一组各维度线性无关的表示，可用于提取数据的主要特征分量，常用于高维数据的降维。本篇文章会带着你重新温故PCA的基本数学原理，让你从更深层次了解PCA的工作机制。<br><a id="more"></a></p><hr><p>向量的表示及基座标变换</p><h2 id="w"><a href="#w" class="headerlink" title="$w$"></a>$w$</h2>]]></content>
       
+      <categories>
+          
+          <category> Code </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 算法 </tag>
+            
+        </tags>
       
     </entry>
     
