@@ -108,7 +108,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-03-24</span>
-            <span class="time">21:29:05</span>
+            <span class="time">08:37:31</span>
           </span>
           
           <!--  Categories  -->
@@ -153,7 +153,7 @@
 <li>逻辑回归求解推导</li>
 </ol>
 <hr>
-<p>逻辑回归的预测函数的形式如下:<br>$$g(z) = \frac{1}{1+e^-z}$$<br>逻辑回归中使用了Sigmoid函数，将数值影射为概率，其中Sigmoid函数形式如下:<br>对于现线性边界的情况，边界形式如下:<br>$$\theta_0 + \theta_1x_1+,\cdots,+\theta_nx_n=\sum_{i=1}^{n}\theta_ix_i=\theta^Tx$$<br>构造的的预测函数为:<br>$$h_\theta(x)=g(\theta^Tx)=\frac{1}{1+e^{-\theta^Tx}}$$<br>预测函数的值有特殊的含义，他表示结果取1的概率，因此对于输入向量$x$分类结果为类别1和类别0的概率分别为：<br>$$<br>    \begin{cases}<br>    P(y=1|x;\theta) = h_\theta(x) \quad h_\theta \geq 0.5\<br>    P(y=0|x;\theta) = 1 - h_\theta(x) \quad h_\theta &lt; 0.5\<br>    \end{cases}<br>$$<br>采用一些技巧，将预测函数改写为下式:<br>$$P(y|x;\theta)=(h_\theta(x))^y\times (1-h_\theta(x))^{1-y} \quad y\in(0,1)$$<br>构造损失函数:<br>$$<br>    Cost(h_\theta(x),y) =<br>    \begin{cases}<br>    -log(h_\theta(x)) \quad if \quad y = 1\<br>    -log(1-h_\theta(x)) \quad if \quad y = 0\<br>    \end{cases}<br>$$<br>损失函数可以改写为如下形式:<br>$$J(\theta)=\frac{1}{m}\sum_{i=1}^{n}Cost(h_\theta(x_i),y_i)=-\frac{1}{m}\left[\sum_{i=1}^{n}y_ilog(h_\theta(x_i))+(1-y_i)log(1-h_\theta(x_i))\right]$$</p>
+<p>逻辑回归的预测函数的形式如下:<br>$$g(z) = \frac{1}{1+e^\textrm{-z}}$$<br>逻辑回归中使用了Sigmoid函数，将数值影射为概率，其中Sigmoid函数形式如下:<br>对于现线性边界的情况，边界形式如下:<br>$$\theta_0 + \theta_1x_1+,\cdots,+\theta_nx_n=\sum_{i=1}^{n}\theta_ix_i=\theta^Tx$$<br>构造的的预测函数为:<br>$$h_\theta(x)=g(\theta^Tx)=\frac{1}{1+e^{-\theta^Tx}}$$<br>预测函数的值有特殊的含义，他表示结果取1的概率，因此对于输入向量$x$分类结果为类别1和类别0的概率分别为：<br>$$<br>    \begin{cases}<br>    P(y=1|x;\theta) = h_\theta(x) \quad h_\theta \geq 0.5\<br>    P(y=0|x;\theta) = 1 - h_\theta(x) \quad h_\theta &lt; 0.5\<br>    \end{cases}<br>$$<br>采用一些技巧，将预测函数改写为下式:<br>$$P(y|x;\theta)=(h_\theta(x))^y\times (1-h_\theta(x))^{1-y} \quad y\in(0,1)$$<br>构造损失函数:<br>$$<br>    Cost(h_\theta(x),y) =<br>    \begin{cases}<br>    -log(h_\theta(x)) \quad if \quad y = 1\<br>    -log(1-h_\theta(x)) \quad if \quad y = 0\<br>    \end{cases}<br>$$<br>损失函数可以改写为如下形式:<br>$$J(\theta)=\frac{1}{m}\sum_{i=1}^{n}Cost(h_\theta(x_i),y_i)=-\frac{1}{m}\left[\sum_{i=1}^{n}y_ilog(h_\theta(x_i))+(1-y_i)log(1-h_\theta(x_i))\right]$$</p>
 <blockquote>
 <p>首先我们选择一个决策边界函数，此边界函数将正负样本分离，决策边界的一边为正样本，另一边为负样本。并且距离决策边界越远，映射到sigmoid函数所得的概率值越大或越小(正样本越大，负样本越小)。这也很符合我们的常规认识，点离决策边界越远，也表示点分为该类，可信度越高<br>对于Cost function 我们希望对于我们希望建立起错误分类的 点与Cost function的联系，错误分类的点越多，分类的概率值越不准确，Cost function的值越大。并且Cost Function应该为一个凸函数，以此避免当我们使用梯度下降法，计算最优解是，陷入局部最优。所以我们采用$-log$对数函数作为Cost Function，当正样本标记为1，但是所预测的概率越低，Cost Function的值越大，负样本同理。我们使用和预测函数中用到的同样技巧，将正负样本的代价函数结合在一起就获得了Cost Function $J(\theta)$<br>而建立Cost Function 最大的意义就是建立起我们需要猜测的系数 $\theta_i$ 与预测偏差之间的联系！</p>
 </blockquote>

@@ -10,7 +10,7 @@
   <meta name="description" content="">
   <meta name="author" content="Jocker">
   <!-- Open Graph Data -->
-  <meta property="og:title" content="机器学习中的常用评估方法"/>
+  <meta property="og:title" content="蒙特卡罗方法(一)"/>
   <meta property="og:description" content="" />
   <meta property="og:site_name" content="Jocker&#39;s"/>
   <meta property="og:type" content="article" />
@@ -51,7 +51,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="page-title with-background-image">
-          <p class="title">机器学习中的常用评估方法</p>
+          <p class="title">蒙特卡罗方法(一)</p>
           <p class="subtitle"></p>
         </div>
         <div class="site-menu with-background-image">
@@ -107,7 +107,7 @@
           
           <!-- Date -->
           <span class="date-time info">On
-            <span class="date">2018-03-21</span>
+            <span class="date">2018-04-29</span>
             <span class="time">08:37:31</span>
           </span>
           
@@ -133,19 +133,27 @@
         
         <!-- Post Main Content -->
         <div class="post-content">
-          <ul>
-<li>本篇文章主要对机器学习，以及深度学习中的一些评估方法的计算进行总结，包括 Precision, Recall, Fp-Rate, Tp-Rate, F-socre, ROC, RP, AUC, AP, MAP等基本评估算法。<a id="more"></a>
-</li>
-</ul>
+          <p>这段时间在项目中遇到了Monto Carlo方法，所以在此对 Monto Carlo 方法进行整理，加深理解。本次文章总共分为3部分，第一部分给出 Monto Carlo 的基础概念介绍。第二部分介绍 Markov Chain Monto Carlo(MCMC) 方法。 第三部分介绍 Monto Carlo Tree Search 方法。<br><a id="more"></a><br>随机算法可以粗略地分为两大类：Las Vegas 算法 和 Monto Carlo 算法，Las Vegas算法总是精确地返回一个正确答案（或者返回算法失败了），而与此相对的 Monto Carlo 算法返回的答案具有随机大小的错误，并且通常来说花费更多的资源，可以得到更优结果。</p>
+<p>Monto Carlo 方法源自于曼哈顿计划，分析种子在反应堆中的传输过程，使用随机采样进行数值估计的想法已经存在了一定时间，但可能由于首次在制造原子弹的过程中起到了作用，并从此出现在许多的其他领域中。</p>
+<p>Monto Carlo 方法的使用范围相当广泛，由于 Monto Carlo 方法有很多不同的应用，目前已经很难得到更加精确的定义。它被用于产品设计中，以模拟零件制造中的变化。它还被应用在生物学中，模拟鸟类从鸟巢到鸟的平均距离，极大减少了计算所需要的资源消耗。它也被应用在人工智能中，例如AlphaGo 中的 MCTS。 也在金融领域，例如，评估金融衍生工具或者期权定价，总之它无处不在。</p>
+<p>蒙特卡洛方法的一个最大的优点是它们将随机性和现实的复杂性注入到模型中，蒙特卡洛方法也符合大数定律和中心极限定律。</p>
 <hr>
-<h2 id="Confuse-Matrix"><a href="#Confuse-Matrix" class="headerlink" title="Confuse Matrix"></a>Confuse Matrix</h2><p>假设我们面对的是一个二分类问题，根据预测结果和事物本身的标签，我们可以通过sklearn 的 confuse matrix 或其他方法获得一个Confuse Matrxi，如下图所示：<br><img src="/image/1.png" alt=""></p>
-<p>根据上图所示的分类结果，我们引出以下评估公式:</p>
-<p>precison: 预测为positive中真正是positive的比例，越大越好，1为理想状态。<br>$$precision = \frac{TP}{TP + FP}$$<br>recall: 所有positive中预测为positive的比例，越大越好，1为理想状态。<br>$$recall = \frac{TP}{TP + FN}$$<br>F1-score: 对precison 和 recall 做一个平均，越大越好。<br>$$F1 = \frac{2\times Precision \times Recall}{Precision + Recall}$$<br>F-measure: 对precison 和 recall 做一个加权平均，越大越好, $\alpha$ 是权重系数。<br>$$F-measure = \frac{(\alpha^2 + 1)\times Precision \times Recall}{\alpha^2(Precision \times Recall)}$$<br>fp-rate: false positive 占整个negative的比例。<br>$$fp-rate = \frac{FP}{FP + TN}$$<br>tp-rate: true positive 占整个positive的比例。<br>$$tp-rate = \frac{TP}{TP + FN}$$</p>
+<p>首先我们引入一个简单的例子，简要介绍 Monto Carlo 的思想</p>
+<p>比如我们想计算 $\pi$,然而通常来说精确计算 $\pi$是非常复杂以及耗时的计算，而采用蒙特卡洛方法，可以通过较为简单的计算，获得 $\pi$的近似解。</p>
+<p>假设正方形内有一个相切的圆，显然它们的面积之比是 $\frac{pi}{4}$</p>
+<p>$$\frac{Area of Circle}{Area of Square} = \frac{\pi r^2}{(2r)^2}=\frac{\pi}{4}$$<br>现在，使用均匀分布，在正方形内部随机产生1000个点，计算它们与中心点的距离，从而判断这些点是否落在圆内部。</p>
+<p><img src="/image/Monte-Carlo-1.png" alt=""></p>
+<p>如果这些点服从均匀分布，那么圆内的点应该占到所有点的 $\frac{\pi}{4}$, 因此将这个比值乘以 4，就得到了 $\pi$ 的值。</p>
+<p>下图是使用python，采取数量不同大小的随机点矩阵，采用Monto Carlo 方法计算得到的误差比率，显然随着随机点数量的增加，错误率明显的降低。此方法也可以应用至其它方面，例如复杂积分的求解。</p>
+<p><img src="/image/Monte-Carlo-2.png" alt=""></p>
 <hr>
-<h2 id="Roc曲线和-AUC"><a href="#Roc曲线和-AUC" class="headerlink" title="Roc曲线和 AUC"></a>Roc曲线和 AUC</h2><p>ROC曲线是基于样本的真实类别和预测概率来绘制的，具体来说，ROC曲线的 x 轴是伪阳性率(false positive rate), y 轴是真阳性率(true positive rate)。 依据上文所给出的公式我们可以计算 $fp-rate, tp-rate$， 而我们可以依据选定的分段间隔绘制 ROC 曲线，例如我们可以选取 0.1 为阈值，将概率大于 0.1 的为正，将概率小于 0.1 的为负，然后计算 $fp-rate, tp-rate$， 同时采取不同的概率分段，计算 $fp-rate, tp-rate$ 然后采取不同的间隔绘制ROC曲线，而AUC的值，就是对应绘制好的ROC曲线与坐标轴所围成的面积，越大越好。</p>
-<p><img src="/image/ROC.png" alt=""></p>
-<hr>
-<h2 id="PR曲线"><a href="#PR曲线" class="headerlink" title="PR曲线"></a>PR曲线</h2>
+<h2 id="Monto-Carlo采样基础"><a href="#Monto-Carlo采样基础" class="headerlink" title="Monto Carlo采样基础"></a>Monto Carlo采样基础</h2><p>当无法精确计算或积分(例如，和具有有指数数量个项，且无法被精确简化)时，通常可以使用Monto Carlo 采样来近似它。这种想法把和或者积分视作某分布下的期望，然后通过估计对应的平均值来近似这个期望。<br>$$s=\sum_{x}p(x)f(x)=E_p[f(x)]$$<br>或者<br>$$s=\int p(x)f(x)dx=E_p[f(x)]$$<br>为我们所需要估计的或者积分，写成期望的形式，$p$ 是一个关于随机变量 $x$ 的概率分布(求和时)或者概率密度函数(求积分时)。</p>
+<p>我们可以通过从 $p$ 中抽取 $n$ 个样本 $x^{(1)},\dots,x^{(n)}$ 来近似 $s$ 并且得到一个经验平均值<br>$$\hat{s} = \frac{1}{n}\sum_{i=1}^{n}f(x^{(i)})$$</p>
+<p>首先很容易观察到，$\hat{s}$ 这个估计是无偏的<br>$$E[\hat{s_n}]=\frac{1}{n}\sum_{i=1}^{n}E[f(x^{i})]=\frac{1}{n}\sum_{i=1}^{n}s$$</p>
+<p>根据大数定理(Law of large number)，如果样本 $x^{(i)}$ 是独立同分布的，那么其平均值几乎必然收敛到期望值即<br>$$\lim_{n \to +\infty}\hat{s_n} = s$$</p>
+<p>只需要满足各个单项的方差 $Var[f(x^{(i)})]$ 有界，比如，我们考虑当 $n$ 增大时 $\hat{s_n}$ 的方差。 只要满足 $Var[f(x^{(i)})] &lt;\infty$, 方差 $Var[f(x^{(i)})]$ 就会减少并收敛到 $0$：<br>$$Var[\hat{s_{n}}] = \frac{1}{n^2}\sum_{i=1}^{n}Var[f(x)]$$<br>$$=\frac{Var[f(x)]}{n}$$</p>
+<p>这个简单有用的结果启迪我们如何估计 Monto Carlo 均值中的不确定性，或者等价地说是 Monto Carlo 估计的期望误差。 中心极限定理(central limit theorem) 告诉我们 $\hat{s_n}$ 的分布收敛到 $s$ 为均值以 $\frac{Var[f(x)]}{n}$ 为方差的正太分布， 这也是我们在上述实验(计算 $\pi$ )中可以印证的。 这使得我们可以利用正态分布的累积函数来估计 $\hat{s_n}$ 的置信区间。</p>
+
         </div>
         <div id="gitmentContainer"></div>
         <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
